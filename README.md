@@ -23,7 +23,7 @@ Enjoy this revolutionary game, which uses some of the old and reknowned Pokémon
 
 The game contains playing instructions.
 
-**Word of warning**: Remember to save often, as the there's pretty much an equal chance of you or your opponent winning. They are as strong as you, and sometimes a little bit stronger. So, remember to buy pots as well.
+**Word of warning**: Remember to save often, opponents can beat you out of the blue. Luckily, the difficulty has been lowered since the initial commit.
 
 ##For developers
 If you're a developer yourself, and want to contribute to this project, you can do so via GitHub. I don't know if I'll be developing more on it myself, but I might. Please note that the source is only sporadically commented, and thus a bit troublesome to maintain. But, I believe I commented the most complicated pieces of the code pretty well. At least I think so.
