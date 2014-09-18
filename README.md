@@ -25,6 +25,7 @@ The game contains playing instructions.
 
 ##For developers
 If you're a developer yourself, and want to contribute to this project, you can do so via GitHub. I don't know if I'll be developing more on it myself, but I might. Please note that the source is only sporadically commented, and thus a bit troublesome to maintain. But, I believe I commented the most complicated pieces of the code pretty well. At least I think so.
+Also, yes, the code could be optimized and be much better, but hey. This is my second project using Python. :)
 
 ##License
 Released under the "DWYWWIJDSI" (Do whatever you want with it, just don't sell it) license.
