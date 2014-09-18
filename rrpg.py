@@ -227,6 +227,9 @@ def fight():
 		if selection == str(i): #if the last option is selected - which is back to fight
 			clear()
 			mainbattle()
+		else:
+			clear()
+			mainbattle()
 
 	def turnpwin():
 		global player, enemy
@@ -281,8 +284,8 @@ def fight():
 	def enemydie():
 		global player, enemy
 		clear()
-		eexp = enemy.tothp
-		ebp = str(int(player.curhp) + int(enemy.level))
+		eexp = str(int(enemy.tothp) * 2)
+		ebp = str((int(player.curhp) + int(enemy.level)) + 2)
 		player.exp = str(int(player.exp) + int(eexp))
 		player.bp = str(int(player.bp) + int(ebp))
 		player.curhp = player.tothp
@@ -505,16 +508,16 @@ def instructions(init=0, name=""):
 	print("5) Exit to main menu\nThis options puts you back to the main menu. But don't worry, it asks you if you're sure before doing so.")
 	input("> (Press enter for next page)")
 	clear()
-	print("Fighting:\nA fight is a battle between an NPC and you as the player. It ends when either of you hit 0HP.\nWhen you initiate in a fight, you get 4 options. They are:\n1) Rock\n2) Paper\n3) Scissors\n4) Use item\n\nYou simply select the weapon that you wish to use, and then you get to know whether you, in this turn, beat the opponent or not.\nIf you hit, you damage the amount of damage that your current weapon deals. In the beginning, this will be 1HP, but as you upgrade your weapons, you get to deal more damage.\nPlease note that an upgraded weapon in a particular weapon-type does not win over a non-upgraded weapon in it's defeating type.\nFor example: A tier 2 rock-type weapon will not beat a tier 1 paper-type weapon, as paper beats rock.")
+	print("Fighting:\nA fight is a normal rock-paper-scissors duel as you would expect it. Rock beats scissors, scissors beat paper, paper beats rock.\nA fight is a battle between an NPC and you as the player. It ends when either of you hit 0HP.\nWhen you initiate in a fight, you get 4 options. They are:\n1) Rock\n2) Paper\n3) Scissors\n4) Use item\n\nYou simply select the weapon that you wish to use, and then you get to know whether you, in this turn, beat the opponent or not.\nIf you hit, you damage the amount of damage that your current weapon deals. In the beginning, this will be 1HP, but as you upgrade your weapons, you get to deal more damage.\nPlease note that an upgraded weapon in a particular weapon-type does not win over a non-upgraded weapon in it's defeating type.\nFor example: A tier 2 rock-type weapon will not beat a tier 1 paper-type weapon, as paper beats rock.")
 	input("> (Press enter for next page)")
 	clear()
-	print("4) Use items\nThis will open a menu where you can select and use your items. In the current version, you can only buy Health Potions, so you could call the inventory a potion bag. Whatever.\n")
+	print("4) Use items\nThis will open a menu where you can select and use your items. In the current version, you can only buy Health Potions, so you could call the inventory a potion bag. Whatever. Also, everyone starts with 1 Health Potion.\n")
 	print("Lives:\nIn RopasciRPG you start with 3 lives. This is the amount of times you're allowed to lose a fight. If your lives reach 0, you die. But, don't despair, whenever you level up, your lives go back up to full again!")
 	input("> (Press enter for next page)")
 	clear()
 	print("Leveling:\nYou level once you reach the amount of experience points required for the next level. You can always see how many experience points you have, and how many you need, in the Town Center.\nLeveling up gives you 2 more HP, and unlocks new weapon upgrades. The max level is 3.\n")
-	print("How is exp calculated?\nIt is simple. You get the amount of total HP your opponent had, when you win over them. So, if you're in level 1, you will always get 4 exp for beating the opponent. Level 2 is 6 exp and so on and so forth.\n")
-	print("How is BP calculated? And what is BP?\nBP means buying points.\n There are two factors which determine how many BP you win from a fight.\nFactor 1: Your remaining HP at the end of a fight. So, if you end the fight with 4HP, you get 4BP from that. If you end it with 1HP, you get 1BP from that factor.\nFactor 2: The opponent's level. So, if you fight against a level 1 Thug, you get 1BP from that factor.")
+	print("How is exp calculated?\nIt is simple. You get the amount of total HP your opponent had, multiplied by 2. So, if you're in level 1, you will always get 6 exp for beating the opponent. Level 2 is 10 exp and so on and so forth.\n")
+	print("How is BP calculated? And what is BP?\nBP means buying points.\nThere are two factors which determine how many BP you win from a fight. These two factors added together and then adding 2 on top of that gives you your earned BP.\nFactor 1: Your remaining HP at the end of a fight, multiplied by 2. So, if you end the fight with 4HP, you get 4BP from that. If you end it with 1HP, you get 1BP from that factor.\nFactor 2: The opponent's level. So, if you fight against a level 1 Thug, you get 1BP from that factor. And then, as mentioned, we add 2 to that value to get the final earned BP.")
 	input("> (Press enter for last page)")
 	clear()
 	print("What are the weapon tiers?\nRock-type:\nTier 1: Rock\nTier 2: Boulder\nTier 3: Anvil\n\nPaper-type:\nTier 1: Paper\nTier 2: Tinfoil\nTier 3: Duct Tape\n\nScissors-type:\nTier 1: Scissors\nTier 2: Knife\nTier 3: Sword\n")
@@ -630,7 +633,7 @@ class Player(object):
 	l2mobs = []
 	l3mobs = []
 
-	def __init__(self, name, gender, race, lives = "3", tothp = "4", curhp = "4", level = "1", exp = "0", bp = "0", weapons = {"r": "rock", "p": "paper", "s": "scissors"}, items = {}, apoth = "0", smith = "0", oot="0", l1mobs = [], l2mobs = [], l3mobs = []):
+	def __init__(self, name, gender, race, lives = "3", tothp = "4", curhp = "4", level = "1", exp = "0", bp = "0", weapons = {"r": "rock", "p": "paper", "s": "scissors"}, items = {"hp": "1"}, apoth = "0", smith = "0", oot="0", l1mobs = [], l2mobs = [], l3mobs = []):
 		self.name = name
 		self.gender = gender
 		self.race = race
@@ -659,7 +662,7 @@ class Enemy(object):
 	curhp=""
 	level=""
 
-	def __init__(self, name, shortname, taunts=["Fight me!"], pref = {"r":1,"p":1,"s":1}, weapons = {"r": "rock", "p": "paper", "s": "scissors"}, tothp = "4", curhp = "4", level = "1"):
+	def __init__(self, name, shortname, taunts=["Fight me!"], pref = {"r":1,"p":1,"s":1}, weapons = {"r": "rock", "p": "paper", "s": "scissors"}, tothp = "3", curhp = "3", level = "1"):
 		self.name = name
 		self.shortname = shortname
 		self.taunts = taunts
@@ -832,30 +835,30 @@ def createenemies(number=4):
 	lordling = Enemy("Lordling", "lordling", ["How darest thou step feet on my property? Watch this piece of silver paper eradicate you.", "Peasant! Obey me, and die to this piece of magical silver paper.", "Silver paper is what saves me. As you shall well discover."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"})
 	
 		#level 2 enemies
-	bleader = Enemy("Bandit Leader", "bleader", ["You might seem so big and strong and cool. But, watch me!", "Welcome to the dark part of the lands.", "Heeeheeeheee! Exterminate!"], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "6", "6", "2")
-	mmagician = Enemy("Master Magician", "mmagician", ["I've got this well practiced magical spell. It's called KNIFE!", "Feel my eternal wrath.", "I am the Master of the Lesser Magicians."], {"r":0.9,"p":1,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "6", "6", "2")
-	cblob = Enemy("Corrupted Blob", "cblob", ["Blooob."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "6", "6", "2")
-	mlumberjack = Enemy("Maniac Lumberjack", "mlumberjack", ["Yiaargh! I will chop yer down like an oak!!", "Chop, chop, chop. All day long. Now for some smashing.", "I had a wife once. Hehehe."], {"r":0.95,"p":0.95,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "6", "6", "2")
-	osailor = Enemy("Old Sailor", "osailor", ["I have sailed all the seven seas. Now, I want to sail in your blood.", "Once I was a sailor. I lost everything I owned, because one of these petty lords came and took her while I was away. To this day, anger and rage is all I know.", "Hoist the sails!"], {"r":0.9,"p":1.1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "6", "6", "2")
-	gnometroll = Enemy("Gnometroll", "gnometroll", ["Yeargheeeaaa! Huxklaen ma, da hexin pelof!"], {"r":1,"p":1,"s":1}, {"r": "bolder", "p": "paper", "s": "scissors"}, "6", "6", "2")
-	eknight = Enemy("Evil Knight", "eknight", ["Valor and honour. These are the words by which I live. At least when the princess is nearby.", "I serve the king, and the darkness of my rotten heart.", "What are you doing so far from any civilization? Now die."], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "6", "6", "2")
-	slayerman = Enemy("Slayerman", "slayerman", ["Mhe. Heh. I.. Well, yes.. I am the Slayerman. Hah. Haha! Heh.", "Heeeellooo, heelloooo. Who.. Who is this dawdling person I.. I meet? HAH! Hehe. I am the Slayerman.", "I.. I am the Slayerman. And I want to play a game."], {"r":1,"p":1.1,"s":0.9}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "6", "6", "2")
-	deserter = Enemy("Deserter", "deserter", ["I've got half the kingdom chasing me down. I am not afraid of a mere peasant such as you.", "Don't blink, or you'll die.", "STOP! And fight."], {"r":1,"p":1,"s":1}, {"r": "boulder", "p": "paper", "s": "scissors"}, "6", "6", "2")
-	lord = Enemy("Lord", "lord", ["I am the Lord of Meagerlands, and you have most definitely trespassed.", "For as I, the Lord, has decreed, so shall you be slain.", "What a little, powerless person you are. Take up your arms!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "6", "6", "2")
+	bleader = Enemy("Bandit Leader", "bleader", ["You might seem so big and strong and cool. But, watch me!", "Welcome to the dark part of the lands.", "Heeeheeeheee! Exterminate!"], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
+	mmagician = Enemy("Master Magician", "mmagician", ["I've got this well practiced magical spell. It's called KNIFE!", "Feel my eternal wrath.", "I am the Master of the Lesser Magicians."], {"r":0.9,"p":1,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "5", "5", "2")
+	cblob = Enemy("Corrupted Blob", "cblob", ["Blooob."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
+	mlumberjack = Enemy("Maniac Lumberjack", "mlumberjack", ["Yiaargh! I will chop yer down like an oak!!", "Chop, chop, chop. All day long. Now for some smashing.", "I had a wife once. Hehehe."], {"r":0.95,"p":0.95,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "5", "5", "2")
+	osailor = Enemy("Old Sailor", "osailor", ["I have sailed all the seven seas. Now, I want to sail in your blood.", "Once I was a sailor. I lost everything I owned, because one of these petty lords came and took her while I was away. To this day, anger and rage is all I know.", "Hoist the sails!"], {"r":0.9,"p":1.1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
+	gnometroll = Enemy("Gnometroll", "gnometroll", ["Yeargheeeaaa! Huxklaen ma, da hexin pelof!"], {"r":1,"p":1,"s":1}, {"r": "bolder", "p": "paper", "s": "scissors"}, "5", "5", "2")
+	eknight = Enemy("Evil Knight", "eknight", ["Valor and honour. These are the words by which I live. At least when the princess is nearby.", "I serve the king, and the darkness of my rotten heart.", "What are you doing so far from any civilization? Now die."], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
+	slayerman = Enemy("Slayerman", "slayerman", ["Mhe. Heh. I.. Well, yes.. I am the Slayerman. Hah. Haha! Heh.", "Heeeellooo, heelloooo. Who.. Who is this dawdling person I.. I meet? HAH! Hehe. I am the Slayerman.", "I.. I am the Slayerman. And I want to play a game."], {"r":1,"p":1.1,"s":0.9}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
+	deserter = Enemy("Deserter", "deserter", ["I've got half the kingdom chasing me down. I am not afraid of a mere peasant such as you.", "Don't blink, or you'll die.", "STOP! And fight."], {"r":1,"p":1,"s":1}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
+	lord = Enemy("Lord", "lord", ["I am the Lord of Meagerlands, and you have most definitely trespassed.", "For as I, the Lord, has decreed, so shall you be slain.", "What a little, powerless person you are. Take up your arms!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "5", "5", "2")
 
 	#level 3 enemies
-	wyvern = Enemy("Wyvern", "wyvern", ["Raaaaarrrgh!", "Reearrgh!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "8", "8", "3")
-	lynx = Enemy("Lynx", "lynx", ["Grrrr!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "duct", "s": "scissors"}, "8", "8", "3")
-	klob = Enemy("King Blob", "klob", ["Bloooob!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "8", "8", "3")
-	gmad = Enemy("General Mad", "gmad", ["I was once a general. I lost it all to the test of time. Too bad, so sad.", "Mad. Mad. Who's mad? Me mad? You mad. Die, you cow.", "I just wanted to ride the horse."], {"r":1.1,"p":0.9,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "8", "8", "3")
-	cminelo = Enemy("Captain Minelo", "cminelo", ["Hi there! Have you seen my friend, the old sailor? I've been looking everywhere for him, btu he is simply gone. Oh my, oh my. Well, you'll do as good as any.", "I come from the ocean. And as the ocean, I show no mercy.", "Merciful is the one who is merciful. I am not that one."], {"r":1,"p":1.1,"s":0.9}, {"r": "rock", "p": "paper", "s": "sword"}, "8", "8", "3")
-	hbandit = Enemy("Horse Bandit", "hbandit", ["What have we here? A frisk one. More likely a dead one.", "Hello. Goodbye.", "I've been watching you for days, slaying all these people. Now you're up."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "duct", "s": "scissors"}, "8", "8", "3")
-	cunicorn = Enemy("Corrupted Unicorn", "cunicorn", ["Neeeeeigh!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "8", "8", "3")
-	kgnometroll = Enemy("King Gnometroll", "kgnometroll", ["Se mulos, mulos mak. Der teflaren digmo!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "8", "8", "3")
-	enlord = Enemy("Envious Lord", "enlord", ["Oh, how I wish I could be free from these chains. These shackles burden me.", "All this responsibility is most definitely tiring.", "I am a sleepwalker, and oh how I wish I was not!"], {"r":0.95,"p":1,"s":0.95}, {"r": "rock", "p": "duct", "s": "scissors"}, "8", "8", "3")
-	mcriminal = Enemy("Mad-eyed Criminal", "mcriminal", ["I robbed a wagon full of jewelry. Which is why I wear this pretty necklace.", "I killed an entire family, and afterwards I slept in their beds. Heeh.", "I stabbed a lord in the heart. He was too lordly for me."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "8", "8", "3")
-	ebear = Enemy("Evil Bear", "ebear", ["Raargh!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "8", "8", "3")
-	king = Enemy("King of Ropasci", "king", ["Halt, company! Who is this traveler? He seems to be challenging to me. Off you pop, little one.", "Halt, company! It seems we've hit a bump in the road, and the bump shall now suffer.", "I am the great King of Ropasci. How darest thou look at me?"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "duct", "s": "sword"}, "8", "8", "3")
+	wyvern = Enemy("Wyvern", "wyvern", ["Raaaaarrrgh!", "Reearrgh!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "7", "7", "3")
+	lynx = Enemy("Lynx", "lynx", ["Grrrr!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "duct", "s": "scissors"}, "7", "7", "3")
+	klob = Enemy("King Blob", "klob", ["Bloooob!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "7", "7", "3")
+	gmad = Enemy("General Mad", "gmad", ["I was once a general. I lost it all to the test of time. Too bad, so sad.", "Mad. Mad. Who's mad? Me mad? You mad. Die, you cow.", "I just wanted to ride the horse."], {"r":1.1,"p":0.9,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "7", "7", "3")
+	cminelo = Enemy("Captain Minelo", "cminelo", ["Hi there! Have you seen my friend, the old sailor? I've been looking everywhere for him, btu he is simply gone. Oh my, oh my. Well, you'll do as good as any.", "I come from the ocean. And as the ocean, I show no mercy.", "Merciful is the one who is merciful. I am not that one."], {"r":1,"p":1.1,"s":0.9}, {"r": "rock", "p": "paper", "s": "sword"}, "7", "7", "3")
+	hbandit = Enemy("Horse Bandit", "hbandit", ["What have we here? A frisk one. More likely a dead one.", "Hello. Goodbye.", "I've been watching you for days, slaying all these people. Now you're up."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "duct", "s": "scissors"}, "7", "7", "3")
+	cunicorn = Enemy("Corrupted Unicorn", "cunicorn", ["Neeeeeigh!"], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "7", "7", "3")
+	kgnometroll = Enemy("King Gnometroll", "kgnometroll", ["Se mulos, mulos mak. Der teflaren digmo!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "7", "7", "3")
+	enlord = Enemy("Envious Lord", "enlord", ["Oh, how I wish I could be free from these chains. These shackles burden me.", "All this responsibility is most definitely tiring.", "I am a sleepwalker, and oh how I wish I was not!"], {"r":0.95,"p":1,"s":0.95}, {"r": "rock", "p": "duct", "s": "scissors"}, "7", "7", "3")
+	mcriminal = Enemy("Mad-eyed Criminal", "mcriminal", ["I robbed a wagon full of jewelry. Which is why I wear this pretty necklace.", "I killed an entire family, and afterwards I slept in their beds. Heeh.", "I stabbed a lord in the heart. He was too lordly for me."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "paper", "s": "sword"}, "7", "7", "3")
+	ebear = Enemy("Evil Bear", "ebear", ["Raargh!"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "paper", "s": "scissors"}, "7", "7", "3")
+	king = Enemy("King of Ropasci", "king", ["Halt, company! Who is this traveler? He seems to be challenging to me. Off you pop, little one.", "Halt, company! It seems we've hit a bump in the road, and the bump shall now suffer.", "I am the great King of Ropasci. How darest thou look at me?"], {"r":1,"p":1,"s":1}, {"r": "anvil", "p": "duct", "s": "sword"}, "7", "7", "3")
 
 def create(name, gender, race):
 	createplayer(name, gender, race)
