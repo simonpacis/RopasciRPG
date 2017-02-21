@@ -43,7 +43,7 @@ def initiate(rerun=0):
 def mg():
 	clear()
 	location("town")
-	print(player.name + "\tHP: " + player.curhp + "/" + player.tothp + "\t\tLives: " + player.lives + "\nLvl: " + player.level + "\tExp: " + player.exp + "/" + lreq() + "\tBP: " + player.bp + "\n" + player.race + "\t" + player.gender + "\n") #print player information
+	print(player.name + "\tHP: " + player.curhp + "/" + player.tothp + "\t\tLives: " + player.lives + "\nLvl: " + player.level + "\tExp: " + player.exp + "/" + lreq() + "\tGold: " + player.bp + "\n" + player.race + "\t" + player.gender + "\n") #print player information
 	if player.items: #if inventory is not empty
 		print("Inventory:", end=" ")
 		for item in player.items: #iterate over items in inventory
@@ -293,7 +293,7 @@ def fight():
 		player.bp = str(int(player.bp) + int(ebp))
 		player.curhp = player.tothp
 		print("Congratulations!\n" + player.name + " won the fight, and " + enemy.name + " died!\n")
-		print("You earned " + eexp + "exp and " + ebp + "BP!")
+		print("You earned " + eexp + " exp and " + ebp + " gold!")
 		if int(player.exp) >= int(lreq()):
 			player.exp = str(int(player.exp) - int(lreq()))
 			player.level = str(int(player.level) + 1)
@@ -323,13 +323,14 @@ def apoth():
 		player.apoth = "1" #player has visited apoth before
 	else:
 		print("Shopkeeper: \"Would you like to purchase something?\"")
-	print("\nCurrent balance: " + player.bp + "BP")
+	print("\nCurrent balance: " + player.bp + " gold")
 
 	i=1
 	for n in apothstock: #fetch items from the apothstock list. Awesomeness, and possibility for more items. Ooh.
 		c = str_to_class(n) #no eval here - thanks so
-		print(str(i) + ") Buy 1 x " + c.name + " - " + c.desc + " (" + c.cost + "BP)") #print the items based on apothstock list
-		i=i+1
+		if(int(player.level) >= int(c.levelreq)):
+			print(str(i) + ") Buy 1 x " + c.name + ": " + c.desc + " - costs " + c.cost + " gold - requires level " + c.levelreq) #print the items based on apothstock list
+			i=i+1
 	print(str(i) + ") Back to town")
 
 	purchase = input("> ")
@@ -341,7 +342,7 @@ def apoth():
 				clear()
 				c = str_to_class(apothstock[x-1]) #no eval here
 				location("apoth")
-				print("You have purchased one \"" + c.name + "\" at the price of " + c.cost + "BP.\n1) Back to Ole Apothecary\n2) Back to town")
+				print("You have purchased one \"" + c.name + "\" at the price of " + c.cost + " gold.\n1) Back to Ole Apothecary\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					apoth()
@@ -350,7 +351,7 @@ def apoth():
 			else: #not enouugh bp
 				clear()
 				location("apoth")
-				print("You do not have enough BP to purchase this item.\n1) Back to Ole Apothecary\n2) Back to town")
+				print("You do not have enough gold to purchase this item.\n1) Back to Ole Apothecary\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					apoth()
@@ -359,6 +360,8 @@ def apoth():
 
 	if purchase == str(i): #if the last option is selected - which is back to town
 		mg()
+	else:
+		apoth()
 
 def smith():
 	clear()
@@ -370,13 +373,13 @@ def smith():
 		player.smith = "1" #player has visited apoth before
 	else:
 		print("Smith: \"Eh, what will it be?\"")
-	print("\nCurrent balance: " + player.bp + "BP\tCurrent level: " + player.level + "\nCurrent weapons: Rock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\tPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\tScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n") #print player information. Look for the players current weapons, and find the corresponding weapon object/class.
+	print("\nCurrent balance: " + player.bp + " gold\tCurrent level: " + player.level + "\nCurrent weapons: Rock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\tPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\tScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n") #print player information. Look for the players current weapons, and find the corresponding weapon object/class.
 
 	i=1
 	for n in smithr:
 		c = str_to_class(n)
 		if int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) - 1: #only print items that require one tier above the currently held tier
-			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + "BP)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smithr list
+			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + " gold)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smithr list
 			i=i+1
 		elif int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) + 1: #if you are maxed out
 			print(str(i) + ") You can not upgrade weapon type \"" + weaponcategories[c.type] + "\" any more.\n")
@@ -385,7 +388,7 @@ def smith():
 	for n in smithp:
 		c = str_to_class(n)
 		if int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) - 1:#only print items that require one tier above the currently held tier
-			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + "BP)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smithp list
+			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + " gold)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smithp list
 			i=i+1
 		elif int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) + 1: #if you are maxed out
 			print(str(i) + ") You can not upgrade weapon type \"" + weaponcategories[c.type] + "\" any more.\n")
@@ -393,7 +396,7 @@ def smith():
 	for n in smiths:
 		c = str_to_class(n)
 		if int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) - 1:#only print items that require one tier above the currently held tier
-			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + "BP)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smiths list
+			print(str(i) + ") Upgrade weapon type \"" + weaponcategories[c.type] + "\" to \"" + c.name + "\" - damages: " + c.dmg + " (" + c.cost + " gold)\n\tRequires: Level: " + c.lreq + "\t" + weaponcategories[c.type] + " tier: " + c.treq + "\n") #print the items based on smiths list
 			i=i+1
 		elif int(str_to_class(player.weapons[c.type]).tier) == int(c.tier) + 1: #if you are maxed out
 			print(str(i) + ") You can not upgrade weapon type \"" + weaponcategories[c.type] + "\" any more.\n")
@@ -409,7 +412,7 @@ def smith():
 			if finupg == "1": #if all requirements are met
 				clear()
 				location("smith")
-				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + c.cost + "BP.\n1) Back to Ye Smithe o'er All\n2) Back to town")
+				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + c.cost + " gold.\n1) Back to Ye Smithe o'er All\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					smith()
@@ -435,6 +438,8 @@ def smith():
 					mg()
 	if upg == str(i): #if the last option is selected - which is back to town
 		mg()
+	else:
+		smith()
 #general action gameloops end
 
 #newgame gameloops start
@@ -520,7 +525,7 @@ def instructions(init=0, name=""):
 	clear()
 	print("Leveling:\nYou level once you reach the amount of experience points required for the next level. You can always see how many experience points you have, and how many you need, in the Town Center.\nLeveling up gives you 2 more HP, and unlocks new weapon upgrades. The max level is 3.\n")
 	print("How is exp calculated?\nIt is simple. You get the amount of total HP your opponent had, multiplied by 2. So, if you're in level 1, you will always get 6 exp for beating the opponent. Level 2 is 10 exp and so on and so forth.\n")
-	print("How is BP calculated? And what is BP?\nBP means buying points.\nThere are two factors which determine how many BP you win from a fight. These two factors added together and then adding 2 on top of that gives you your earned BP.\nFactor 1: Your remaining HP at the end of a fight, multiplied by 2. So, if you end the fight with 4HP, you get 4BP from that. If you end it with 1HP, you get 1BP from that factor.\nFactor 2: The opponent's level. So, if you fight against a level 1 Thug, you get 1BP from that factor. And then, as mentioned, we add 2 to that value to get the final earned BP.")
+	print("How is gold calculated? And what is gold?\nThere are two factors which determine how many gold you win from a fight. These two factors added together and then adding 2 on top of that gives you your earned gold.\nFactor 1: Your remaining HP at the end of a fight, multiplied by 2. So, if you end the fight with 4HP, you get 4 gold from that. If you end it with 1HP, you get 1 gold from that factor.\nFactor 2: The opponent's level. So, if you fight against a level 1 Thug, you get 1 gold from that factor. And then, as mentioned, we add 2 to that value to get the final earned gold.")
 	input("> (Press enter for last page)")
 	clear()
 	print("What are the weapon tiers?\nRock-type:\nTier 1: Rock\nTier 2: Boulder\nTier 3: Anvil\n\nPaper-type:\nTier 1: Paper\nTier 2: Tinfoil\nTier 3: Duct Tape\n\nScissors-type:\nTier 1: Scissors\nTier 2: Knife\nTier 3: Sword\n")
@@ -703,18 +708,20 @@ class Item(object):
 	cost = ""
 	effect = "" #heal
 	value = "" #amount of heal
+	levelreq = ""
 
-	def __init__(self, name, shortname, desc, cost, effect, value="0"):
+	def __init__(self, name, shortname, desc, cost, effect, value="0", levelreq="1"):
 		self.name = name
 		self.shortname = shortname
 		self.desc = desc
 		self.cost = cost
 		self.effect = effect
 		self.value = value
+		self.levelreq = levelreq
 #classes end
 
 #declarations start
-player, hp, rock, paper, scissors, boulder, tinfoil, knife, anvil, duct, sword, enemy, playerselect, playerweapon, enemyweapon = (0,)*15
+player, hp, majhp, mindetector, majdetector, rock, paper, scissors, boulder, tinfoil, knife, anvil, duct, sword, enemy, playerselect, playerweapon, enemyweapon = (0,)*18
 #mob declarations start
 thug, bandit, eblob, chorse, wolf, magician, madp, lordling = (0,)*8 #level 1 mobs
 bleader, mmagician, cblob, mlumberjack, osailor, gnometroll, eknight, slayerman, deserter, lord = (0,)*10 #level 2 mobs
@@ -724,7 +731,7 @@ l1mobs = ["thug", "bandit", "eblob", "chorse", "wolf", "magician", "madp", "lord
 l2mobs = ["bleader", "mmagician", "cblob", "mlumberjack", "osailor", "gnometroll", "eknight", "slayerman", "deserter", "lord"]
 l3mobs = ["wyvern", "lynx", "kblob", "gmad", "cminelo", "hbandit", "cunicorn", "kgnometroll", "enlord", "mcriminal", "ebear", "king"]
 levelreqs = {"2":"25","3":"50","4":"9999"}
-apothstock = ["hp"]
+apothstock = ["hp", "majhp", "mindetector", "majdetector"]
 smithr = ["boulder", "anvil"]
 smithp = ["tinfoil", "duct"]
 smiths = ["knife", "sword"]
@@ -784,14 +791,45 @@ def use(item):
 				return(0)
 
 	def applyeffect(item):
-		effects = {'heal': "player.curhp = str(int(player.curhp) + 1)"}
-		
-		#fix below if other effects are added. cbf to do it atm
-		if player.curhp != player.tothp:
-			player.curhp = str(int(player.curhp) + 1)
-			return(1)
-		else:
-			return(0)
+		item = str_to_class(item)
+
+		if(item.effect == "heal"):
+			if (int(player.curhp)) <= (int(player.tothp) - int(item.value)):
+				player.curhp = str(int(player.curhp) + int(item.value))
+				return(1)
+			elif (int(player.curhp)) < int(player.tothp):
+				player.curhp = str(int(player.tothp))
+				return(1)
+			else:
+				return(0)
+		if(item.effect == "detect"):
+			clear()
+			prefs = enemy.pref
+			amntofone = 0
+			for key, value in prefs.items():
+				if value == 1:
+					amntofone = amntofone + 1
+			prefmax = max(prefs.keys(), key=(lambda key: prefs[key]))
+			types = weaponcategories
+			prefmin = min(prefs.keys(), key=(lambda key: prefs[key]))
+			detected = random.random()
+			if detected > 0.40 or item.value == "1":
+				print("You managed to succesfully detect " + enemy.name + "'s weapon preferences:")
+				if(amntofone > 1 and amntofone < 3):
+					print(enemy.name + "'s preferred weapon is: " + types[prefmax] + "-type weapons.")
+					del types[prefmax]
+					print(enemy.name + "'s least preferred weapons are: " + types[1] + "-type weapons and " + types[2] + "-type weapons.")
+				elif(amntofone == 3):
+					print(enemy.name + " does not have a preferred weapon type.")
+				else:
+					print(enemy.name + "'s most preferred weapon is: " + types[prefmax] + "-type weapons.")
+					print(enemy.name + "'s least preferred weapon is: " + types[prefmin] + "-type weapons.")
+				input("> ")
+				return(1)
+			else:
+				print("You did not manage to detect " + enemy.name + "'s weapon preferences.\n")
+				input("> ")
+				return(0)
 	return mainuse()
 
 def location(loc):
@@ -803,8 +841,11 @@ def createplayer(name, gender, race):
 
 def createitems():
 	#Adding more items? Remember to declare the global as well, and create it as an empty variable in the declarations block
-	global hp
-	hp = Item("Health Potion", "hp", "heals 1 HP", "10", "heal", "1")
+	global hp, majhp, mindetector, majdetector
+	hp = Item("Health Potion", "hp", "heals 1 HP", "10", "heal", "1", "1")
+	majhp = Item("Major Health Potion", "majhp", "heals 2 HP", "15", "heal", "2", "2")
+	mindetector = Item("Minor Revelation Potion", "detector", "tries to detect enemy weapon preferences", "5", "detect", "0", "1")
+	majdetector = Item("Major Revelation Potion", "majdetector", "detects enemy weapon preferences", "7", "detect", "1", "2")
 
 def createweapons():
 	#argument order: name, shortname, tier, dmg, cost, type, lreq, treq
@@ -837,7 +878,7 @@ def createenemies(number=4):
 	madp = Enemy("Mad Peasant", "madp", ["Where am I? Who are you? DIE!", "I am so angry with my wife. You shall suffer from it.", "Watch where you stand! This is my soil!"])
 	lordling = Enemy("Lordling", "lordling", ["How darest thou step feet on my property? Watch this piece of silver paper eradicate you.", "Peasant! Obey me, and die to this piece of magical silver paper.", "Silver paper is what saves me. As you shall well discover."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"})
 	
-		#level 2 enemies
+	#level 2 enemies
 	bleader = Enemy("Bandit Leader", "bleader", ["You might seem so big and strong and cool. But, watch me!", "Welcome to the dark part of the lands.", "Heeeheeeheee! Exterminate!"], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
 	mmagician = Enemy("Master Magician", "mmagician", ["I've got this well practiced magical spell. It's called KNIFE!", "Feel my eternal wrath.", "I am the Master of the Lesser Magicians."], {"r":0.9,"p":1,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "5", "5", "2")
 	cblob = Enemy("Corrupted Blob", "cblob", ["Blooob."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")

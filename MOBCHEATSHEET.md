@@ -17,9 +17,6 @@ Please note that the above information is applied loosely, as some of the mobs d
 As mentioned above, non-humanoids never have weapon preferences. You can identify non-humanoids by their use of sounds instead of words, in their taunts.
 
 ###Actual data, please?
-Well, it's all in the code, my friend. It shouldn't be too hard to find, even in my messy mass of a code.
-Here's a starting point:
-
-* Find where the mobs are created!
+Use the Revelation Potions in-game!
 
 And have fun!
