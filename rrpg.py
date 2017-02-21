@@ -412,7 +412,7 @@ def smith():
 			if finupg == "1": #if all requirements are met
 				clear()
 				location("smith")
-				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + c.cost + " gold.\n1) Back to Ye Smithe o'er All\n2) Back to town")
+				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + str_to_class(player.weapons[weapontypes[x-1]]).cost + " gold.\n1) Back to Ye Smithe o'er All\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					smith()
