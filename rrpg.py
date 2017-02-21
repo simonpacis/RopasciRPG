@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
+
 #import start
 import sys
 import os
@@ -773,7 +776,7 @@ def use(item):
 			else:
 				return(0)
 		else: #if not the last, remove one from quantity
-			applyeffect(item)
+			application = applyeffect(item)
 			if application == 1:
 				player.items[item] = str(int(player.items[item]) - 1)
 				return(1)
