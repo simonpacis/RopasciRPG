@@ -7,4 +7,5 @@
 * BP renamed to gold for simplicity.
 * Fixed a bug where you could replay the victory scene from a battle, thus getting infinite gold and exp.
 * Fixed a bug where the game would crash if you used an item when quantity > 1.
-* Everything EXPLODED and abstracted away from rrpg.py into seperate files. You still have to simply run rrpg.py though. To be added will be a "plunker"-script that can compile it all into one file for you, for portability.
+* Everything EXPLODED and abstracted away from rrpg.py into seperate files. You still have to simply run rrpg.py though.
+* Added compiler script.

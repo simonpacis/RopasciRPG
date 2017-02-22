@@ -9,11 +9,28 @@ import pathlib
 import pickle
 #import end
 
-exec(open("./classes.py").read())
+if("compile" in sys.argv):
+	with open('rrpg.py', 'r') as file:
+	    data = file.readlines()
+	i = 0
+	found = 0
+	for line in data:
+		if "exec(open(" in line and found > 2:
+			path = line[len('exec(open("'):-(len('").read()'))-2]
+			data[i] = open(path).read()
+		elif "exec(open(" in line:
+			found = found + 1
+		i = i + 1
+	with open('rrpgp.py', 'w') as file:
+	    file.writelines( data )
+	print("Compiled to rrpgp.py!")
+	sys.exit(0)
 
-exec(open("./declarations.py").read())
+exec(open("classes.py").read())
 
-exec(open("./functions.py").read())
+exec(open("declarations.py").read())
+
+exec(open("functions.py").read())
 
 #entities
 
