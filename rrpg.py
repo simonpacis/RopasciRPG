@@ -9,23 +9,6 @@ import pathlib
 import pickle
 #import end
 
-if("compile" in sys.argv):
-	with open('rrpg.py', 'r') as file:
-	    data = file.readlines()
-	i = 0
-	found = 0
-	for line in data:
-		if "exec(open(" in line and found > 2:
-			path = line[len('exec(open("'):-(len('").read()'))-2]
-			data[i] = open(path).read()
-		elif "exec(open(" in line:
-			found = found + 1
-		i = i + 1
-	with open('rrpgp.py', 'w') as file:
-	    file.writelines( data )
-	print("Compiled to rrpgp.py!")
-	sys.exit(0)
-
 exec(open("classes.py").read())
 
 exec(open("declarations.py").read())
@@ -62,8 +45,9 @@ exec(open("menu/about.py").read())
 exec(open("menu/saveload.py").read())
 
 exec(open("menu/exit.py").read())
-
 #gameloops end
+
+exec(open("tools/compile.py").read())
 
 #run it all
 if __name__ == '__main__':
