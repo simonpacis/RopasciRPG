@@ -1,6 +1,6 @@
 def createenemies(number=4):
 	#argument order name, shortname, taunts, pref, weapons, tothp, curhp, level
-	global thug, bandit, eblob, chorse, wolf, magician, madp, lordling, bleader, mmagician, cblob, mlumberjack, osailor, gnometroll, eknight, slayerman, deserter, lord, wyvern, lynx, kblob, gmad, cminelo, hbandit, cunicorn, kgnometroll, enlord, mcriminal, ebear, king
+	global thug, bandit, eblob, chorse, wolf, magician, madp, lordling, bleader, mmagician, cblob, mlumberjack, osailor, gnometroll, eknight, slayerman, deserter, lord, wyvern, lynx, klob, gmad, cminelo, hbandit, cunicorn, kgnometroll, enlord, mcriminal, ebear, king
 	#level 1 enemies
 	thug = Enemy("Thug", "thug", ["Eh, what are you up to?", "Come over here, mate.", "What have we here?"], {"r":1.1,"p":0.95,"s":0.95})
 	bandit = Enemy("Bandit", "bandit", ["Let me rob you.", "You're too far from home!", "Hehehe."], {"r":1.1,"p":0.95,"s":0.95})
@@ -17,7 +17,7 @@ def createenemies(number=4):
 	cblob = Enemy("Corrupted Blob", "cblob", ["Blooob."], {"r":1,"p":1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
 	mlumberjack = Enemy("Maniac Lumberjack", "mlumberjack", ["Yiaargh! I will chop yer down like an oak!!", "Chop, chop, chop. All day long. Now for some smashing.", "I had a wife once. Hehehe."], {"r":0.95,"p":0.95,"s":1.1}, {"r": "rock", "p": "paper", "s": "knife"}, "5", "5", "2")
 	osailor = Enemy("Old Sailor", "osailor", ["I have sailed all the seven seas. Now, I want to sail in your blood.", "Once I was a sailor. I lost everything I owned, because one of these petty lords came and took her while I was away. To this day, anger and rage is all I know.", "Hoist the sails!"], {"r":0.9,"p":1.1,"s":1}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
-	gnometroll = Enemy("Gnometroll", "gnometroll", ["Yeargheeeaaa! Huxklaen ma, da hexin pelof!"], {"r":1,"p":1,"s":1}, {"r": "bolder", "p": "paper", "s": "scissors"}, "5", "5", "2")
+	gnometroll = Enemy("Gnometroll", "gnometroll", ["Yeargheeeaaa! Huxklaen ma, da hexin pelof!"], {"r":1,"p":1,"s":1}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
 	eknight = Enemy("Evil Knight", "eknight", ["Valor and honour. These are the words by which I live. At least when the princess is nearby.", "I serve the king, and the darkness of my rotten heart.", "What are you doing so far from any civilization? Now die."], {"r":1.1,"p":0.95,"s":0.95}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
 	slayerman = Enemy("Slayerman", "slayerman", ["Mhe. Heh. I.. Well, yes.. I am the Slayerman. Hah. Haha! Heh.", "Heeeellooo, heelloooo. Who.. Who is this dawdling person I.. I meet? HAH! Hehe. I am the Slayerman.", "I.. I am the Slayerman. And I want to play a game."], {"r":1,"p":1.1,"s":0.9}, {"r": "rock", "p": "tinfoil", "s": "scissors"}, "5", "5", "2")
 	deserter = Enemy("Deserter", "deserter", ["I've got half the kingdom chasing me down. I am not afraid of a mere peasant such as you.", "Don't blink, or you'll die.", "STOP! And fight."], {"r":1,"p":1,"s":1}, {"r": "boulder", "p": "paper", "s": "scissors"}, "5", "5", "2")
