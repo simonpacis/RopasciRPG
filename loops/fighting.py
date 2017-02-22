@@ -190,20 +190,6 @@ def fight():
 		clear()
 		mainbattle()
 
-	def playerdie():
-		global player
-		clear()
-		player.lives = str(int(player.lives) - 1)
-		player.curhp = player.tothp
-		if int(player.lives) == int(0):
-			print("You took a huge amount of beatings, and therefore you have perished. It is indeed a sad day.")
-			input("> ")
-			initiate()
-		else:	
-			print(enemy.name + " won the fight.")
-			print(player.name + " fainted! You can only faint " + player.lives + " more times. (Press enter to continue)")
-			input("> ")
-			mg()
 
 	def enemydie():
 		global player, enemy
@@ -231,4 +217,19 @@ def fight():
 		mg()
 
 	mainbattle()
+	
+def playerdie():
+	global player
+	clear()
+	player.lives = str(int(player.lives) - 1)
+	player.curhp = player.tothp
+	if int(player.lives) == int(0):
+		print("You took a huge amount of beatings, and therefore you have perished. It is indeed a sad day.")
+		input("> ")
+		initiate()
+	else:	
+		print(enemy.name + " won the fight.")
+		print(player.name + " fainted! You can only faint " + player.lives + " more times. (Press enter to continue)")
+		input("> ")
+		mg()
 #fighting gameloops end

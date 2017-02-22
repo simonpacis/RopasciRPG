@@ -60,15 +60,28 @@ def applyeffect(item):
 	if(item.effect == "flee"):
 		clear()
 		escape = random.random()
-		if escape >= (1-int(item.value)):
-			print("Got away safely. (Press enter to continue)")
-			# We have to rewrite the remove item from inventory code, as we're leaving the fight without returning
-			if int(player.items[orgitem]) == 1:
-				del player.items[orgitem]
+		if(float(item.value) <= 1):
+			if escape >= (1-float(item.value)):
+				print("Got away safely. (Press enter to continue)")
+				# We have to rewrite the remove item from inventory code, as we're leaving the fight without returning
+				if int(player.items[orgitem]) == 1:
+					del player.items[orgitem]
+				else:
+					player.items[orgitem] = str(int(player.items[orgitem]) - 1)
+				input("> ")
+				mg()
 			else:
-				player.items[orgitem] = str(int(player.items[orgitem]) - 1)
-			input("> ")
-			mg()
+				return(2)
 		else:
-			return(2)
-
+			player.curhp = str(int(player.curhp) - int(4))
+			if(int(player.curhp) <= 0):
+				playerdie()
+			else:
+				print("Got away safely. (Press enter to continue)")
+				# We have to rewrite the remove item from inventory code, as we're leaving the fight without returning
+				if int(player.items[orgitem]) == 1:
+					del player.items[orgitem]
+				else:
+					player.items[orgitem] = str(int(player.items[orgitem]) - 1)
+				input("> ")
+				mg()

@@ -1,5 +1,5 @@
 #declarations start
-player, hp, fleer, majhp, mindetector, majdetector, rock, paper, scissors, boulder, tinfoil, knife, anvil, duct, sword, enemy, playerselect, playerweapon, enemyweapon = (0,)*19
+player, hp, fleer, majfleer, majhp, mindetector, majdetector, rock, paper, scissors, boulder, tinfoil, knife, anvil, duct, sword, enemy, playerselect, playerweapon, enemyweapon = (0,)*20
 #mob declarations start
 thug, bandit, eblob, chorse, wolf, magician, madp, lordling = (0,)*8 #level 1 mobs
 bleader, mmagician, cblob, mlumberjack, osailor, gnometroll, eknight, slayerman, deserter, lord = (0,)*10 #level 2 mobs
@@ -9,7 +9,7 @@ l1mobs = ["thug", "bandit", "eblob", "chorse", "wolf", "magician", "madp", "lord
 l2mobs = ["bleader", "mmagician", "cblob", "mlumberjack", "osailor", "gnometroll", "eknight", "slayerman", "deserter", "lord"]
 l3mobs = ["wyvern", "lynx", "kblob", "gmad", "cminelo", "hbandit", "cunicorn", "kgnometroll", "enlord", "mcriminal", "ebear", "king"]
 levelreqs = {"2":"25","3":"50","4":"9999"}
-apothstock = ["hp", "majhp", "fleer", "mindetector", "majdetector"]
+apothstock = ["hp", "majhp", "fleer", "majfleer", "mindetector", "majdetector"]
 smithr = ["boulder", "anvil"]
 smithp = ["tinfoil", "duct"]
 smiths = ["knife", "sword"]
