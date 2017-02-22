@@ -222,7 +222,7 @@ def fight():
 					mainbattle() #back to fight
 				else:
 					clear()
-					print("You do not need a Health Potion right now. (Press enter to go back to fight)") #fix this if more effects are added
+					print(str_to_class(items[x-1]).failed + " (Press enter to go back to fight)")
 					input("> ")
 					clear()
 					mainbattle()
@@ -705,15 +705,17 @@ class Item(object):
 	name = ""
 	shortname = ""
 	desc = ""
+	failed = ""
 	cost = ""
 	effect = "" #heal
 	value = "" #amount of heal
 	levelreq = ""
 
-	def __init__(self, name, shortname, desc, cost, effect, value="0", levelreq="1"):
+	def __init__(self, name, shortname, desc, failed, cost, effect, value="0", levelreq="1"):
 		self.name = name
 		self.shortname = shortname
 		self.desc = desc
+		self.failed = failed
 		self.cost = cost
 		self.effect = effect
 		self.value = value
@@ -764,10 +766,8 @@ def upgrade(type):
 		return "2"
 	b = str_to_class(str_to_class(type + "tiers")[a]) #weapon in next tier, in selected type/category
 	if player.level >= b.lreq and a == int(b.treq) and int(player.bp) >= int(b.cost) and int(player.bp) > 0: #if all reqs are met (player level, current tier in selected category is)
-		#print(str(str_to_class(player.weapons[a.type]).tier))
 		player.bp = str(int(player.bp) - int(b.cost))
 		player.weapons[type] = b.shortname
-		print(player.weapons[type])
 		return "1"
 	else:
 		return "0"
@@ -777,20 +777,23 @@ def use(item):
 	def mainuse():
 		if int(player.items[item]) == 1: #if it is the last of item - delete it from dictionary
 			application = applyeffect(item)
-			if application == 1:
+			if application != 0:
 				del player.items[item]
-				return(1)
+				return(application)
 			else:
 				return(0)
 		else: #if not the last, remove one from quantity
 			application = applyeffect(item)
-			if application == 1:
+			if application != 0:
 				player.items[item] = str(int(player.items[item]) - 1)
-				return(1)
+				return(application)
 			else:
 				return(0)
 
 	def applyeffect(item):
+
+		""" applyeffect can return three different things. return(0) means the effect of the item has failed, and the item should not be removed from inventory; as in a health potion that can not be used because the health is full. return(1) means the item has been succesfully used. return(2) means that the item has been used, but the failed message should still be displayed. Basically this means that the item will be removed from inventory (subtract 1 from quantity), but the fail message will still be displayed to the player; as in a revelation potion that has been used, but you failed to detect the enemy's weapon preference."""
+
 		item = str_to_class(item)
 
 		if(item.effect == "heal"):
@@ -804,15 +807,18 @@ def use(item):
 				return(0)
 		if(item.effect == "detect"):
 			clear()
+			types = weaponcategories
 			prefs = enemy.pref
-			amntofone = 0
+			amntofone = 0 #amount of preferences at 1; no preference in given category
+
 			for key, value in prefs.items():
 				if value == 1:
 					amntofone = amntofone + 1
+
 			prefmax = max(prefs.keys(), key=(lambda key: prefs[key]))
-			types = weaponcategories
 			prefmin = min(prefs.keys(), key=(lambda key: prefs[key]))
 			detected = random.random()
+
 			if detected > 0.40 or item.value == "1":
 				print("You managed to succesfully detect " + enemy.name + "'s weapon preferences:")
 				if(amntofone > 1 and amntofone < 3):
@@ -827,9 +833,7 @@ def use(item):
 				input("> ")
 				return(1)
 			else:
-				print("You did not manage to detect " + enemy.name + "'s weapon preferences.\n")
-				input("> ")
-				return(0)
+				return(2)
 	return mainuse()
 
 def location(loc):
@@ -842,10 +846,10 @@ def createplayer(name, gender, race):
 def createitems():
 	#Adding more items? Remember to declare the global as well, and create it as an empty variable in the declarations block
 	global hp, majhp, mindetector, majdetector
-	hp = Item("Health Potion", "hp", "heals 1 HP", "10", "heal", "1", "1")
-	majhp = Item("Major Health Potion", "majhp", "heals 2 HP", "15", "heal", "2", "2")
-	mindetector = Item("Minor Revelation Potion", "detector", "tries to detect enemy weapon preferences", "5", "detect", "0", "1")
-	majdetector = Item("Major Revelation Potion", "majdetector", "detects enemy weapon preferences", "7", "detect", "1", "2")
+	hp = Item("Health Potion", "hp", "heals 1 HP", "You do not need a Health Potion right now.", "10", "heal", "1", "1")
+	majhp = Item("Major Health Potion", "majhp", "heals 2 HP", "You do not need a Major Health Potion right now.", "15", "heal", "2", "2")
+	mindetector = Item("Minor Revelation Potion", "mindetector", "tries to detect enemy weapon preferences", "You did not manage to detect your enemy's weapon preferences.", "5", "detect", "0", "1")
+	majdetector = Item("Major Revelation Potion", "majdetector", "detects enemy weapon preferences", "You did not manage to detect your enemy's weapon preferences.", "7", "detect", "1", "2")
 
 def createweapons():
 	#argument order: name, shortname, tier, dmg, cost, type, lreq, treq
