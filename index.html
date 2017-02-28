@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RopasciRPG</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: black;
+        color:      white;
+
+        width:  60%;
+        height: 50%;
+
+        padding: 0;
+        margin: 0;
+        margin: auto;
+        margin-top:  100px;
+
+        box-sizing: border-box;
+      }
+    </style>
+    <link rel="stylesheet" href="terminal.css">
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+  </head>
+  <body>
+  <h1>RopasciRPG</h1>
+  <p>Rock-paper-scissors + RPG + terminal = RopasciRPG</p>
+  <p>Download here: <a style='text-decoration: none; color:white;' href='http://github.com/simonklitjohnson/RopasciRPG' target='_blank'>http://github.com/simonklitjohnson/RopasciRPG</a></p>
+  <template>
+  <div id="terminal">
+    <p id="begin">Welcome to RopasciRPG<br>&nbsp;<br>
+
+Please select an option.<br>
+1) New game<br>
+2) Load game<br>
+3) Instructions<br>
+4) About<br>
+5) Mod info<br>
+6) Exit game<br></p>
+    <p class="hidden">
+      <span class="prompt"><content></content></span>
+      <span contenteditable="true" class="input"> </span>
+    </p>
+  </div>
+</template>
+<script>
+  var Terminal = (function() {
+      var history = [], //(localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []),
+          historyIndex = history.length;
+          self = {};
+
+      try {
+        history = localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []
+      } catch(e) {}
+
+      var KEY_UP   = 38,
+          KEY_DOWN = 40,
+          KEY_TAB  = 9;
+
+      // Auxiliary functions
+
+      var resetPrompt = function(terminal, prompt) {
+          var newPrompt = prompt.parentNode.cloneNode(true);
+          prompt.setAttribute("contenteditable", false);
+          if(self.prompt) {
+              newPrompt.querySelector(".prompt").textContent = self.prompt;
+          }
+          terminal.appendChild(newPrompt);
+          newPrompt.querySelector(".input").innerHTML = " ";
+          newPrompt.querySelector(".input").focus();
+      };
+
+      var runCommand = function(terminal, cmd, args) {
+          terminal.innerHTML += (self.commands[cmd](args));
+      };
+
+      var updateHistory = function(cmd) {
+          history.push(cmd);
+          try {
+            localStorage.setItem("history", history);
+          } catch(e) {}
+          historyIndex = history.length;
+      };
+
+      var browseHistory = function(prompt, direction) {
+          var changedPrompt = false;
+          if(direction == KEY_UP && historyIndex > 0) {
+              prompt.textContent = history[--historyIndex];
+              changedPrompt = true;
+          } else if(direction == KEY_DOWN) {
+              if(historyIndex < history.length) ++historyIndex;
+              if(historyIndex < history.length) prompt.textContent = history[historyIndex];
+              else prompt.textContent = " ";
+              changedPrompt = true;
+          }
+
+          if(changedPrompt) {
+              var range = document.createRange();
+              var sel = window.getSelection();
+              range.setStart(prompt.childNodes[0], prompt.textContent.length);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+          }
+      };
+
+      var autoCompleteInput = function(input) {
+          var cmds        = self.commands,
+              re          = new RegExp("^" + input, "ig"),
+              suggestions = [];
+          for(var cmd in cmds) {
+              if(cmds.hasOwnProperty(cmd) && cmd.match(re)) {
+                  suggestions.push(cmd);
+              }
+          }
+          return suggestions;
+      };
+
+      // Terminal functions
+
+      self.init = function(elem, commands) {
+          self.commands = commands;
+
+          elem.addEventListener("keydown", function(event) {
+              if(event.keyCode == KEY_TAB) {
+                  var prompt = event.target;
+                  var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
+
+                  if(suggestions.length == 1) {
+                      prompt.textContent = suggestions[0];
+                      var range = document.createRange();
+                      var sel = window.getSelection();
+                      range.setStart(prompt.childNodes[0], suggestions[0].length);
+                      range.collapse(true);
+                      sel.removeAllRanges();
+                      sel.addRange(range);
+                  }
+
+                  event.preventDefault(true);
+                  return false;
+              }
+          });
+
+          elem.addEventListener("keyup", function(event) {
+              if(historyIndex < 0) return;
+              browseHistory(event.target, event.keyCode);
+          });
+
+          elem.addEventListener("keypress", function(event) {
+              var prompt = event.target;
+              if(event.keyCode != 13) return false;
+
+              updateHistory(prompt.textContent);
+
+              var input = prompt.textContent.split(" ");
+              if(input[0] && input[0] in self.commands) {
+                  runCommand(elem, input[0], input);
+              }
+
+              resetPrompt(elem, prompt);
+              event.preventDefault();
+          });
+
+          elem.querySelector(".input").focus();
+          return self;
+      };
+
+      return self;
+  })();
+
+  // Component
+
+  var FakeTerminal = undefined;
+  (function(currentScript) {
+
+    var elemPrototype = Object.create(HTMLElement.prototype);
+    Object.defineProperty(elemPrototype, "commands", {
+      get: function() { return this.terminal.commands; },
+      set: function(newCommands) { this.terminal.commands = newCommands; }
+    });
+
+    elemPrototype.createdCallback = function() {
+      this.root = this.createShadowRoot();
+      var tplContent = currentScript.ownerDocument.querySelector("template").content,
+          node       = document.importNode(tplContent, true);
+
+      this.root.appendChild(node);
+    };
+
+    elemPrototype.attachedCallback = function() {
+        this.ready = true
+        this.terminal        = window.Terminal.init(this.root.getElementById("terminal"), {});
+        this.terminal.prompt = this.root.querySelector("content").getDistributedNodes()[0].textContent;
+
+        if(this.onload) {
+          console.log('onload')
+          this.onload()
+        }
+
+    };
+
+    elemPrototype.attributeChangedCallback = function(attrName, oldVal, newVal) {
+      console.log(attrName, oldVal, newVal);
+      if(attrName == "commands") { this.terminal.commands = newVal; }
+    };
+
+    FakeTerminal = document.registerElement("fake-terminal", { prototype: elemPrototype });
+  }(document._currentScript || document.currentScript));
+</script>
+
+    <fake-terminal>></fake-terminal>
+    <script>
+      any = function()
+      {
+        return "<p>no</p>";
+      }
+
+      var cmds = {};
+
+      cmds[1] = function() {
+        return "<p>Browser version in the works. To start a new game, please download RopasciRPG from <a style='text-decoration: none; color:white;' href='http://github.com/simonklitjohnson/RopasciRPG' target='_blank'>http://github.com/simonklitjohnson/RopasciRPG</a>.</p>"
+      };
+      cmds[2] = function() {
+        return "<p>Browser version in the works. To load a saved game, please download RopasciRPG from <a style='text-decoration: none; color:white;' href='http://github.com/simonklitjohnson/RopasciRPG' target='_blank'>http://github.com/simonklitjohnson/RopasciRPG</a>.</p>"
+      };
+      cmds[3] = function() {
+        return "<p><br>&nbsp;<br>RopasciRPG is a rock-paper-scissors game with RPG elements, as the name sort of implies.<br>Let's take it bite for bite.<br></p><p><br>When you create a new character, you get to choose a name, a gender and a race. As of current version, gender and race will not make a difference in-game (this might change if I make future updates).<br>Hereafter, you will arrive at the Town Center. This is the \"hub\" of the game, and from here you get to choose what you want to do. The options are:<br>1) Look for trouble<br>2) Go to \"Ole Apothecary\"<br>3) Go to \"Ye Smithe o'er All\"<br>4) Save game<br>5) Exit to main menu<br></p><p><br>1) Look for trouble<br>Look for trouble initiates a fight. You will meet an NPC that is the same level as you, and you will get to fight him. You have a single chance to flee from your opponent, but there's only a 40 percent chance of success. Failing will force you to fight the opponent.<br></p><p><br>2) Go to \"Ole Apothecary\"<br>The \"Ole Apothecary\" is the medical shop of the town. Here, you can buy Health Potions and Health Potions. How it works is pretty self-explanatory.<br></p><p><br>3) Go to \"Ye Smithe o'er All\"<br>The \"Ye Smithe o'er All\" is the town's blacksmith. Here, you get to upgrade your weapons to their next tier.<br></p><p><br>4) Save game<br>This option is pretty self-explanatory. You get to save your game, so you can return to it later. Please check that after you have saved, a \"saves\" folder with the chosen name exists next to the .py file. If not, perhaps some permissions are off.<br></p><p><br>5) Exit to main menu<br>This options puts you back to the main menu. But don't worry, it asks you if you're sure before doing so.</p><p><br>Fighting:<br>A fight is a normal rock-paper-scissors duel as you would expect it. Rock beats scissors, scissors beat paper, paper beats rock.<br>A fight is a battle between an NPC and you as the player. It ends when either of you hit 0HP.<br>When you initiate in a fight, you get 4 options. They are:<br>1) Rock<br>2) Paper<br>3) Scissors<br>4) Use item<br><br>You simply select the weapon that you wish to use, and then you get to know whether you, in this turn, beat the opponent or not.<br>If you hit, you damage the amount of damage that your current weapon deals. In the beginning, this will be 1HP, but as you upgrade your weapons, you get to deal more damage.<br>Please note that an upgraded weapon in a particular weapon-type does not win over a non-upgraded weapon in it's defeating type.<br>For example: A tier 2 rock-type weapon will not beat a tier 1 paper-type weapon, as paper beats rock.</p><p><br>4) Use items<br>This will open a menu where you can select and use your items. In the current version, you can only buy Health Potions, so you could call the inventory a potion bag. Whatever. Also, everyone starts with 1 Health Potion.<br></p><p><br>Lives:<br>In RopasciRPG you start with 3 lives. This is the amount of times you're allowed to lose a fight. If your lives reach 0, you die. But, don't despair, whenever you level up, your lives go back up to full again!</p><p><br>Leveling:<br>You level once you reach the amount of experience points required for the next level. You can always see how many experience points you have, and how many you need, in the Town Center.<br>Leveling up gives you 2 more HP, and unlocks new weapon upgrades. The max level is 3.<br></p><p><br>How is exp calculated?<br>It is simple. You get the amount of total HP your opponent had, multiplied by 2. So, if you're in level 1, you will always get 6 exp for beating the opponent. Level 2 is 10 exp and so on and so forth.<br></p>How is gold calculated? And what is gold?<br>There are two factors which determine how many gold you win from a fight. These two factors added together and then adding 2 on top of that gives you your earned gold.<br>Factor 1: Your remaining HP at the end of a fight, multiplied by 2. So, if you end the fight with 4HP, you get 4 gold from that. If you end it with 1HP, you get 1 gold from that factor.<br>Factor 2: The opponent's level. So, if you fight against a level 1 Thug, you get 1 gold from that factor. And then, as mentioned, we add 2 to that value to get the final earned gold.</p><p><br>What are the weapon tiers?<br>Rock-type:<br>Tier 1: Rock<br>Tier 2: Boulder<br>Tier 3: Anvil<br><br>Paper-type:<br>Tier 1: Paper<br>Tier 2: Tinfoil<br>Tier 3: Duct Tape<br><br>Scissors-type:<br>Tier 1: Scissors<br>Tier 2: Knife<br>Tier 3: Sword<br></p><p><br>Anything else I need to know?<br>I don't think so. If you experience any bugs, let me know over at GitHub.<br><br>Have fun!</p>";
+      };
+
+      cmds[4] = function() {
+        return "<p><br>Read the instructions for a detailed \"about\" on RopasciRPG. I'd just like to tell you why this game was made.</p><p><br>This game was made as an entry to www.teamtreehouse.com's \"Forum contest\", where you're supposed to create a rock-paper-scissors-ish game. And so I did. I hope you enjoy it throughly.</p><p><br>If you're a developer yourself, and want to contribute to this project, you can do so via GitHub. I don't know if I'll be developing more on it myself, but I might. Please note that the source is only sporadically commented, and thus a bit troublesome to maintain. But, I believe I commented the most complicated pieces of the code pretty well. At least I think so.</p><p><br>License: This is released under the \"DWYWWIJDSI\" (Do whatever you want with it, just don't sell it) license. Enjoy!</p>";
+      };
+
+      cmds[5] = function() {
+        return "<p>The mods currently loaded are:</p><p><br>No mods loaded</p>"
+      };
+
+      cmds[6] = function() {
+        return "Goodbye.";
+      };
+
+
+      cmds.hello = function(args) {
+        if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
+        return "Hello " + args[1];
+      };
+
+      cmds.weather = function(args) {
+        args.shift();
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", "http://api.openweathermap.org/data/2.5/weather?units=metric&q=" + args.join(" "), false);
+        xhr.send();
+        if(xhr.status !== 200) return "Error :(";
+        weather = JSON.parse(xhr.responseText);
+        return "<p><img style=\"vertical-align: middle\" src=\"http://openweathermap.org/img/w/" +
+               weather.weather[0].icon + ".png\">" +
+               weather.weather[0].description + ", " +
+               weather.main.temp + " &deg;C</p>"
+      };
+
+      var terminal = document.querySelector("fake-terminal");
+      if(terminal.ready) terminal.commands = cmds
+      else {
+        document.querySelector("fake-terminal").onload = function() {
+          this.commands = cmds;
+        }
+      }
+    </script>
+  </body>
+</html>
