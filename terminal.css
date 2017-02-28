@@ -1,0 +1,44 @@
+@import url(//fonts.googleapis.com/css?family=Inconsolata);
+
+/**
+* Terminal container.
+* Important note: The "VT323" font face comes from Google web fonts.
+*/
+fake-terminal::shadow #terminal {
+    border-radius: 3px;
+    font-family: 'Inconsolata', cursive;
+    background: rgb(30,30,30);
+    width:       100%;
+    padding: 10px;
+    height:      100%;
+}
+
+/**
+* The input span where the input happens.
+* Also applied to the previous inputs made in the current session.
+*/
+#terminal .input {
+    min-width: 1em;
+    height: 1em;
+    display:inline-block;
+    border: none;
+    outline-color: transparent;
+}
+
+fake-terminal::shadow #terminal .input {
+    height:         1em;
+    min-width:      90%;
+    outline: none;
+    outline-color:  none;
+    border:         none;
+    display:        inline-block;
+}
+
+fake-terminal::shadow #terminal .input:focus{
+    outline: none;
+}
+
+fake-terminal::shadow #terminal p {
+    margin:     0;
+    padding:    0;
+}
