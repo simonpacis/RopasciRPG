@@ -1,14 +1,19 @@
-def initiate(rerun=0):
+def initiate():
 	clear()
-	print("Welcome to RopasciRPG.")
 
-	if rerun == 0:
-		print("\n")
-	elif rerun == 1:
-		print("\nOption does not exist. Please try again.")
+	print(
+"""Welcome to RopasciRPG
 
-	print("Please select an option.\n1) New game\n2) Load game\n3) Instructions\n4) About\n5) Exit game")
+Please select an option.
+1) New game
+2) Load game
+3) Instructions
+4) About
+5) Mod info
+6) Exit game""")
+
 	menuselection = input("> ")
+
 	if menuselection == "1":
 		ng1()
 	elif menuselection == "2":
@@ -18,6 +23,8 @@ def initiate(rerun=0):
 	elif menuselection == "4":
 		about()
 	elif menuselection == "5":
+		modinfo()
+	elif menuselection == "6":
 		gameexit()
 	else:
-		initiate(1)
+		initiate()

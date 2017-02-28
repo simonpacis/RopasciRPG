@@ -7,6 +7,9 @@ import os
 import random
 import pathlib
 import pickle
+import glob
+import json
+import traceback
 #import end
 
 exec(open("classes.py").read())
@@ -34,11 +37,13 @@ exec(open("loops/main.py").read())
 
 exec(open("loops/fighting.py").read())
 
-exec(open("loops/general.py").read())
+exec(open("loops/stores.py").read())
 
 exec(open("loops/newgame.py").read())
 
 exec(open("menu/instructions.py").read())
+
+exec(open("menu/modinfo.py").read())
 
 exec(open("menu/about.py").read())
 
@@ -47,8 +52,15 @@ exec(open("menu/saveload.py").read())
 exec(open("menu/exit.py").read())
 #gameloops end
 
+#mods start
+exec(open("tools/modload.py").read())
+#mods end
+
 exec(open("tools/compile.py").read())
 
 #run it all
-if __name__ == '__main__':
-	initiate()
+try:
+	if __name__ == '__main__':
+		initiate()
+except KeyboardInterrupt:
+	handleinterrupt()

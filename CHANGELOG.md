@@ -2,6 +2,11 @@
 
 
 ###Latest changes
+* MODS
+* Added other items
+* Added a looting system
+
+###Older changes
 * Added the "Minor Revelation Potion" and "Major Revelation Potion" items, allowing you to detect enemy weapon preferences!
 * Added "Major Health Potion" giving you 2 HP, but requiring you to be level 2 and costs 15 gold.
 * BP renamed to gold for simplicity.

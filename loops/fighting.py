@@ -9,17 +9,12 @@ def initfight():
 		clear()
 		player.oot = "1"
 	#create and select the opponent
-	createenemies() #create enemies
-	newenemy = 0
-	while (newenemy == 0): #make sure that a new enemy is selected
-		enemy = str_to_class(random.choice((str_to_class("l" + player.level + "mobs")))) #random enemy from current player level
-		if enemy in getattr(player, 'l%dmobs' % int(player.level)):
-			newenemy = 0
-		else:
-			newenemy = 1
-			l = getattr(player, 'l%dmobs' % int(player.level))
-			l.append(enemy.shortname)
-			l is getattr(player, 'l%dmobs' % int(player.level))
+	
+	enemy = pickle.loads(pickle.dumps(enemies[random.choice(list(enemies.keys()))])) # select random enemy from enemies dict and do pickle.dump and load to make a clone of the enemy.
+	while int(enemy.level) != int(player.level):
+		enemy = pickle.loads(pickle.dumps(enemies[random.choice(list(enemies.keys()))]))
+		pass
+
 	location("oot")
 	if enemy.name.lower()[0] in "aeiou":
 		print('An', end=" ")
@@ -48,18 +43,19 @@ def fight():
 	global playerselect
 	clear()
 	def battlescreen():
-		print(player.name + "\tHP: " + player.curhp + "/" + player.tothp + "\t\tLives: " + player.lives + "\nLvl: " + player.level + "\tExp: " + player.exp + "/" + lreq() + "\n") #print player information
+		print(underline(player.name) + red("\tHP: " + player.curhp + "/" + player.tothp) + "\t\tLives: " + player.lives + "\nLvl: " + player.level + blue("\tExp: " + player.exp + "/" + lreq() + "\n")) #print player information
+		print(bold("Your enemy:") + "\n" + underline(enemy.name) + red("\tHP: " + enemy.curhp + "/" + enemy.tothp) + "\n\n")
+
 		if player.items: #if inventory is not empty
-			print("Inventory:", end=" ")
+			print(bold("Inventory:"), end=" ")
 			for item in player.items: #iterate over items in inventory
-				c = str_to_class(item) #string to class without using eval
+				c = items[item] #string to class without using eval
 				print(c.name + ": " + player.items[item] + "\t", end=" ") #print item and tab it at the end + no newline
 		else:
-			print("Inventory: (empty)", end=" ")
+			print(bold("Inventory: ") + "(empty)", end=" ")
 
-		print("\n\nCurrent weapons:\nRock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\nPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\nScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n")
+		print(bold("\n\nCurrent weapons:") + "\nRock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\nPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\nScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n")
 
-		print("\n" + enemy.name + "\tHP: " + enemy.curhp + "/" + enemy.tothp + "\n")
 	def mainbattle():
 		global playerselect
 		if int(player.curhp) <= 0:
@@ -68,8 +64,37 @@ def fight():
 			enemydie()
 
 		battlescreen()
+		prefs = enemy.pref
 
-		print("\n1) (or r) " + str_to_class(player.weapons["r"]).name + "\n2) (or p) " + str_to_class(player.weapons["p"]).name + "\n3) (or s) " + str_to_class(player.weapons["s"]).name + "\n4) Use item")
+		amntofone = 0 #amount of preferences at 1; no preference in given category
+
+		for key, value in prefs.items():
+			if value == 1:
+				amntofone = amntofone + 1
+
+		if "constdetector" in player.items: #player has obtained constant preference detector
+			types = weaponcategories
+
+			prefmax = max(prefs.keys(), key=(lambda key: prefs[key]))
+			if(amntofone == 2 or amntofone == 1):
+				if(prefmax == "r"):
+					print("\n1) (or r) " + str_to_class(player.weapons["r"]).name)
+					print(bold("2) (or p) " + str_to_class(player.weapons["p"]).name))
+					print("3) (or s) " + str_to_class(player.weapons["s"]).name)					
+				if(prefmax == "p"):
+					print("\n1) (or r) " + str_to_class(player.weapons["r"]).name)
+					print("2) (or p) " + str_to_class(player.weapons["p"]).name)
+					print(bold("3) (or s) " + str_to_class(player.weapons["s"]).name))
+				if(prefmax == "s"):
+					print(bold("\n1) (or r) " + str_to_class(player.weapons["r"]).name))
+					print("2) (or p) " + str_to_class(player.weapons["p"]).name)
+					print("3) (or s) " + str_to_class(player.weapons["s"]).name)
+				print("4) Use item")
+				print("5) Taunt")
+			else:
+				print(bold("\n1) (or r) " + str_to_class(player.weapons["r"]).name + "\n2) (or p) " + str_to_class(player.weapons["p"]).name + "\n3) (or s) " + str_to_class(player.weapons["s"]).name) + "\n4) Use item\n5) Taunt")
+		else:
+			print("\n1) (or r) " + str_to_class(player.weapons["r"]).name + "\n2) (or p) " + str_to_class(player.weapons["p"]).name + "\n3) (or s) " + str_to_class(player.weapons["s"]).name + "\n4) Use item\n5) Taunt")
 		fsel = input("> ")
 		if fsel == "1" or fsel == "r":
 			playerselect = "r"
@@ -80,8 +105,10 @@ def fight():
 		elif fsel == "3" or fsel == "s":
 			playerselect = "s"
 			turn()
-		else:
+		elif fsel == "4":
 			fightinventory()
+		else:
+			fighttaunt()
 
 	def turn():
 		global playerweapon, enemyweapon
@@ -118,18 +145,26 @@ def fight():
 				else:
 					turnpwin()
 
+	def fighttaunt():
+		clear()
+		print("As you taunt %s, you hear in response:\n" % (enemy.name))
+		print(enemy.name + ": \"" + random.choice(enemy.taunts) + "\"\n")
+		input("> (Press enter to return to battle)")
+		clear()
+		mainbattle()
+
 	def fightinventory():
 		global player
-		items = []
+		localitems = []
 		clear()
 		i=1
 		if player.items: #if inventory is not empty
 			print("Inventory:\n")
 			print("Please select an item to use")
 			for item in player.items: #iterate over items in inventory
-				c = str_to_class(item) #string to class without using eval
+				c = items[item] #string to class without using eval
 				print(str(i) + ") Use 1 x " + c.name + " (Qty: " + player.items[item] + ")")
-				items.append(item)
+				localitems.append(item)
 				i=i+1
 		else:
 			print("Inventory: (empty)\n")
@@ -137,13 +172,13 @@ def fight():
 		selection = input("> ")
 		for x in range(1, i): #create the actual options - iterating over the amount of items in inventory
 			if selection == str(x): #if the selected item is item being iterated right now
-				usage = use(items[x-1]) #use selected item
+				usage = use(localitems[x-1]) #use selected item
 				if usage == 1:
 					clear()
 					mainbattle() #back to fight
 				else:
 					clear()
-					print(str_to_class(items[x-1]).failed + " (Press enter to go back to fight)")
+					print(items[localitems[x-1]].failed + " (Press enter to go back to fight)")
 					input("> ")
 					clear()
 					mainbattle()
@@ -200,7 +235,10 @@ def fight():
 		player.bp = str(int(player.bp) + int(ebp))
 		player.curhp = player.tothp
 		print("Congratulations!\n" + player.name + " won the fight, and " + enemy.name + " died!\n")
-		print("You earned " + eexp + " exp and " + ebp + " gold!")
+		print("You earned " + blue(eexp + " exp ") + "and " + yellow(ebp + " gold!"))
+
+		loot()
+
 		if int(player.exp) >= int(lreq()):
 			player.exp = str(int(player.exp) - int(lreq()))
 			player.level = str(int(player.level) + 1)
@@ -217,7 +255,28 @@ def fight():
 		mg()
 
 	mainbattle()
-	
+
+def loot():
+	global player, enemy
+	looted = []
+	for x in range(1, int(enemy.maxloot) + 1):
+		lootchance = random.random()
+		potentialloot = random.sample(list(enemy.loot), 1)[0]
+		if(lootchance <= float(enemy.loot[potentialloot])):
+			looted.append(potentialloot)
+			c = items[potentialloot]
+			if c.shortname in player.items: #if item exists in inventory
+				player.items[c.shortname] = str(int(player.items[c.shortname]) + 1) #add to the quantity
+			else: #if it does not exist in inventory
+				player.items[c.shortname] = '1' #create it
+	if(len(looted) != 0):
+		print("\n" + yellow(bold("You found loot!")))
+		print("You found:")
+		for x in range(0, len(looted)):
+			itm = items[looted[x]]
+			print("1 x " + bold(itm.name) + ": " + itm.desc)
+		print(" ")
+
 def playerdie():
 	global player
 	clear()
@@ -226,6 +285,7 @@ def playerdie():
 	if int(player.lives) == int(0):
 		print("You took a huge amount of beatings, and therefore you have perished. It is indeed a sad day.")
 		input("> ")
+		player = 0
 		initiate()
 	else:	
 		print(enemy.name + " won the fight.")

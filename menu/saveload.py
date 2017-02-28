@@ -1,11 +1,16 @@
 
-def save():
+def save(quitgame=0):
 	clear()
-	print("What would you like to call your savegame? (Type \"Back\" to go back to the menu)")
+	if quitgame == 0:
+		print("What would you like to call your savegame? (Type \"Back\" to go back to the menu)")
+	else:
+		print("What would you like to call your savegame?")
 	filename = input("> ")
 	filename = filename.lower()
-	if filename == "back":
+	if filename == "back" and quitgame == 0:
 		mg()
+	elif filename == "back" and quitgame == 1:
+		save(1)
 
 	if not os.path.exists("saves"):
 		os.makedirs("saves")
@@ -20,10 +25,13 @@ def save():
 			f.close()
 			print("Your game has been saved. Press enter to continue.")
 			enter = input("> ")
-			if enter == "":
-				mg()
+			if(quitgame == 0):
+				if enter == "":
+					mg()
+				else:
+					mg()
 			else:
-				mg()
+				gameexit()
 		else:
 			save()
 	else:
@@ -32,10 +40,10 @@ def save():
 		f.close()
 		print("Your game has been saved. Press enter to continue.")
 		enter = input("> ")
-		if enter == "":
-			mg()
+		if(quitgame == 0):
+			initiate()
 		else:
-			mg()
+			gameexit()
 
 def load():
 	clear()
@@ -49,10 +57,7 @@ def load():
 	if not savedgames:
 		print("No savegames exist. Press enter to return to the main menu.")
 		enter = input("> ")
-		if enter == "":
-			initiate()
-		else:
-			initiate()
+		initiate()
 	else:
 		print('The following savegames exist:\n%s' % '\t'.join(map(str, savedgames)) + "\nWhich one would you like to load? (type \"Back\" to return to the main menu)")
 		loadfile = input("> ")

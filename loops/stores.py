@@ -9,13 +9,13 @@ def apoth():
 		player.apoth = "1" #player has visited apoth before
 	else:
 		print("Shopkeeper: \"Would you like to purchase something?\"")
-	print("\nCurrent balance: " + player.bp + " gold")
+	print("\nCurrent balance: " + yellow(player.bp + " gold"))
 
 	i=1
 	for n in apothstock: #fetch items from the apothstock list. Awesomeness, and possibility for more items. Ooh.
-		c = str_to_class(n) #no eval here - thanks so
+		c = items[n] #no eval here - thanks so
 		if(int(player.level) >= int(c.levelreq)):
-			print(str(i) + ") Buy 1 x " + c.name + ": " + c.desc + " - costs " + c.cost + " gold - requires level " + c.levelreq) #print the items based on apothstock list
+			print(str(i) + ") Buy 1 x (Lvl: " + c.levelreq + ") " + bold(c.name) + ": " + c.desc + " - costs " + yellow(c.cost + " gold")) #print the items based on apothstock list
 			i=i+1
 	print(str(i) + ") Back to town")
 
@@ -26,9 +26,9 @@ def apoth():
 			finbuy = buy(apothstock[x-1]) #buy selected item
 			if finbuy == "1": #if palyer has enough bp
 				clear()
-				c = str_to_class(apothstock[x-1]) #no eval here
+				c = items[apothstock[x-1]] #no eval here
 				location("apoth")
-				print("You have purchased one \"" + c.name + "\" at the price of " + c.cost + " gold.\n1) Back to Ole Apothecary\n2) Back to town")
+				print("You have purchased one \"" + bold(c.name) + "\" at the price of " + yellow(str((c.cost) + " gold")) + ".\n1) Back to " + locations[player.location] + "\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					apoth()
@@ -37,7 +37,7 @@ def apoth():
 			else: #not enouugh bp
 				clear()
 				location("apoth")
-				print("You do not have enough gold to purchase this item.\n1) Back to Ole Apothecary\n2) Back to town")
+				print("You do not have enough gold to purchase this item.\n1) Back to " + locations[player.location] + "\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					apoth()
@@ -59,7 +59,7 @@ def smith():
 		player.smith = "1" #player has visited apoth before
 	else:
 		print("Smith: \"Eh, what will it be?\"")
-	print("\nCurrent balance: " + player.bp + " gold\tCurrent level: " + player.level + "\nCurrent weapons: Rock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\tPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\tScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n") #print player information. Look for the players current weapons, and find the corresponding weapon object/class.
+	print("\nCurrent balance: " + yellow(player.bp + " gold") + "\nCurrent level: " + player.level + "\nCurrent weapons: Rock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\tPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\tScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n") #print player information. Look for the players current weapons, and find the corresponding weapon object/class.
 
 	i=1
 	for n in smithr:
@@ -98,7 +98,7 @@ def smith():
 			if finupg == "1": #if all requirements are met
 				clear()
 				location("smith")
-				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + str_to_class(player.weapons[weapontypes[x-1]]).cost + " gold.\n1) Back to Ye Smithe o'er All\n2) Back to town")
+				print("You have upgraded your weapon in weapon type \"" + weaponcategories[weapontypes[x-1]] + "\" to \"" + str_to_class(player.weapons[weapontypes[x-1]]).name + "\" at the price of " + str_to_class(player.weapons[weapontypes[x-1]]).cost + " gold.\n1) Back to " + locations[player.location] + "\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					smith()
@@ -107,7 +107,7 @@ def smith():
 			elif finupg == "0": #does not meet requirements
 				clear()
 				location("smith")
-				print("You do not meet the requirements to upgrade this weapon.\n1) Back to Ye Smithe o'er All\n2) Back to town")
+				print("You do not meet the requirements to upgrade this weapon.\n1) Back to " + locations[player.location] + "\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					smith()
@@ -116,7 +116,7 @@ def smith():
 			elif finupg == "2":
 				clear()
 				location("smith")
-				print("You are currently maxed out in this weapon type, and can therefore not upgrade.\n1) Back to Ye Smithe o'er All\n2) Back to town")
+				print("You are currently maxed out in this weapon type, and can therefore not upgrade.\n1) Back to " + locations[player.location] + "\n2) Back to town")
 				selection = input("> ")
 				if selection == "1":
 					smith()
@@ -126,4 +126,57 @@ def smith():
 		mg()
 	else:
 		smith()
+
+def merchant():
+	clear()
+	global player
+	location("merchant")
+	if player.merchant == "0":
+		print("As you approach the marketplace, you hear a man bellow something towrads you.\n")
+		print("Merchant: \"Would you like to make some quick money? I'll buy anything you have, and give ya' a good price for it too!\"")
+		player.merchant = "1" #player has visited merchant before
+	else:
+		print("Merchant: \"Would you like to sell something?\"")
+	print("\nCurrent balance: " + yellow(player.bp + " gold"))
+
+	i=1
+	playeritems = list(player.items.keys())
+	if(len(player.items) > 0):
+		for n in playeritems: #fetch items from the apothstock list. Awesomeness, and possibility for more items. Ooh.
+			c = items[n] #no eval here - thanks so
+			print(str(i) + ") Sell 1 x (Lvl: " + c.levelreq + ") " + bold(c.name) + ": " + c.desc + " - will get you " + yellow(str(int(float(c.cost)/2)) + " gold")) #print the items based on apothstock list
+			i=i+1
+	else:
+		print("You have nothing to sell.\n")
+	print(str(i) + ") Back to town")
+
+	sellopt = input("> ")
+
+	for x in range(1, i): #create the actual options - iterating over the amount of products in shop
+		if sellopt == str(x): #if the sell is the current item
+			finsell = sell(playeritems[x-1]) #buy selected item
+			if finsell == "1": #if palyer has enough bp
+				clear()
+				c = items[playeritems[x-1]] #no eval here
+				location("merchant")
+				print("You have sold one \"" + bold(c.name) + "\" for " + yellow(str(int(float(c.cost)/2)) + " gold") + ".\n1) Back to " + locations[player.location] + "\n2) Back to town")
+				selection = input("> ")
+				if selection == "1":
+					merchant()
+				else:
+					mg()
+			else: #not enouugh bp
+				clear()
+				location("merchant")
+				print("You do not have this item in your inventory.\n1) Back to " + locations[player.location] + "\n2) Back to town")
+				selection = input("> ")
+				if selection == "1":
+					merchant()
+				else:
+					mg()
+
+	if sellopt == str(i): #if the last option is selected - which is back to town
+		mg()
+	else:
+		merchant()
 #general action gameloops end

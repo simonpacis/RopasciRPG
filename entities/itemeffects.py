@@ -9,7 +9,7 @@ def applyeffect(item):
 	to the player; as in a revelation potion that has been used, but you failed to detect the enemy's
 	weapon preference."""
 
-	item = str_to_class(item)
+	item = items[item]
 
 	"""
 		Heal effect heals player.
@@ -28,34 +28,37 @@ def applyeffect(item):
 		Detect effect detects enemy weapon preferences.
 	"""
 	if(item.effect == "detect"):
-		clear()
-		types = weaponcategories
-		prefs = enemy.pref
-		amntofone = 0 #amount of preferences at 1; no preference in given category
+		if(int(item.value) < 2): #If the item.value is 2 it is a constant detector, if it is 0 it is a 60% chance for detect and if it is 1 it is 100% chance for detect
+			clear()
+			types = weaponcategories
+			prefs = enemy.pref
+			amntofone = 0 #amount of preferences at 1; no preference in given category
 
-		for key, value in prefs.items():
-			if value == 1:
-				amntofone = amntofone + 1
+			for key, value in prefs.items():
+				if value == 1:
+					amntofone = amntofone + 1
 
-		prefmax = max(prefs.keys(), key=(lambda key: prefs[key]))
-		prefmin = min(prefs.keys(), key=(lambda key: prefs[key]))
-		detected = random.random()
+			prefmax = max(prefs.keys(), key=(lambda key: prefs[key]))
+			prefmin = min(prefs.keys(), key=(lambda key: prefs[key]))
+			detected = random.random()
 
-		if detected > (1-(0.60)) or item.value == "1": #60% chance to detect unless item.value is 1
-			print("You managed to succesfully detect " + enemy.name + "'s weapon preferences:")
-			if(amntofone > 1 and amntofone < 3):
-				print(enemy.name + "'s preferred weapon is: " + types[prefmax] + "-type weapons.")
-				del types[prefmax]
-				print(enemy.name + "'s least preferred weapons are: " + types[1] + "-type weapons and " + types[2] + "-type weapons.")
-			elif(amntofone == 3):
-				print(enemy.name + " does not have a preferred weapon type.")
+			if detected > (1-(0.60)) or item.value == "1": #60% chance to detect unless item.value is 1
+				print("You managed to succesfully detect " + enemy.name + "'s weapon preferences:")
+				if(amntofone > 1 and amntofone < 3):
+					print(enemy.name + "'s preferred weapon is: " + types[prefmax] + "-type weapons.")
+					del types[prefmax]
+					print(enemy.name + "'s least preferred weapons are: " + types[1] + "-type weapons and " + types[2] + "-type weapons.")
+				elif(amntofone == 3):
+					print(enemy.name + " does not have a preferred weapon type.")
+				else:
+					print(enemy.name + "'s most preferred weapon is: " + types[prefmax] + "-type weapons.")
+					print(enemy.name + "'s least preferred weapon is: " + types[prefmin] + "-type weapons.")
+				input("> ")
+				return(1)
 			else:
-				print(enemy.name + "'s most preferred weapon is: " + types[prefmax] + "-type weapons.")
-				print(enemy.name + "'s least preferred weapon is: " + types[prefmin] + "-type weapons.")
-			input("> ")
-			return(1)
-		else:
-			return(2)
+				return(2)
+		elif(int(item.value) == 2):
+			return(0)
 
 	if(item.effect == "flee"):
 		clear()

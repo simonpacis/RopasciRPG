@@ -14,11 +14,10 @@ class Player(object):
 	apoth = ""
 	smith = ""
 	oot = ""
-	l1mobs = []
-	l2mobs = []
-	l3mobs = []
+	merchant = ""
+	location = ""
 
-	def __init__(self, name, gender, race, lives = "3", tothp = "4", curhp = "4", level = "1", exp = "0", bp = "0", weapons = {"r": "rock", "p": "paper", "s": "scissors"}, items = {"hp": "1"}, apoth = "0", smith = "0", oot="0", l1mobs = [], l2mobs = [], l3mobs = []):
+	def __init__(self, name, gender, race, lives = "3", tothp = "4", curhp = "4", level = "1", exp = "0", bp = "0", weapons = {"r": "rock", "p": "paper", "s": "scissors"}, items = {"hp": "1"}, apoth = "0", smith = "0", oot="0", merchant="0", location="town"):
 		self.name = name
 		self.gender = gender
 		self.race = race
@@ -33,9 +32,8 @@ class Player(object):
 		self.apoth = apoth
 		self.smith = smith
 		self.oot = oot
-		self.l1mobs = l1mobs
-		self.l2mobs = l2mobs
-		self.l3mobs = l3mobs
+		self.merchant = merchant
+		self.location = location
 
 class Enemy(object):
 	name=""
@@ -46,8 +44,10 @@ class Enemy(object):
 	tothp=""
 	curhp=""
 	level=""
+	loot=""
+	maxloot=""
 
-	def __init__(self, name, shortname, taunts=["Fight me!"], pref = {"r":1,"p":1,"s":1}, weapons = {"r": "rock", "p": "paper", "s": "scissors"}, tothp = "3", curhp = "3", level = "1"):
+	def __init__(self, name, shortname, taunts=["Fight me!"], pref = {"r":1,"p":1,"s":1}, weapons = {"r": "rock", "p": "paper", "s": "scissors"}, tothp = "3", curhp = "3", level = "1", loot = {}, maxloot = 0):
 		self.name = name
 		self.shortname = shortname
 		self.taunts = taunts
@@ -56,7 +56,11 @@ class Enemy(object):
 		self.tothp = tothp
 		self.curhp = curhp
 		self.level = level
+		self.loot = loot
+		self.maxloot = maxloot
 
+	def reset(self):
+		self.curhp = self.tothp
 
 class Weapon(object):
 	name = ""
@@ -82,10 +86,10 @@ class Item(object):
 	name = ""
 	shortname = ""
 	desc = ""
-	failed = ""
+	failed = "" #message to print if item failed to be usedd
 	cost = ""
-	effect = "" #heal
-	value = "" #amount of heal
+	effect = "" #effect applied when used
+	value = "" #amount of effect
 	levelreq = ""
 
 	def __init__(self, name, shortname, desc, failed, cost, effect, value="0", levelreq="1"):
