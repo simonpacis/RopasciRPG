@@ -13,36 +13,17 @@ def mg():
 
 	print(bold("\n\nCurrent weapons:") + "\nRock: " + str_to_class(player.weapons["r"]).name + " (" + str_to_class(player.weapons["r"]).tier + ")\nPaper: " + str_to_class(player.weapons["p"]).name + " (" + str_to_class(player.weapons["p"]).tier + ")\nScissors: " + str_to_class(player.weapons["s"]).name + " (" + str_to_class(player.weapons["s"]).tier + ")\n")
 
-	print(
-	bold("Please select an option")
-	+ """
-1) Look for trouble
-2) Go to \"""" + locations['apoth'] + """\"
-3) Go to \"""" + locations['smith'] + """\"
-4) Go to \"""" + locations['merchant'] + """\"
-5) Save game
-6) Exit to main menu""")
+	print(bold("Please select an option"))
 
-	selection = input("> ")
+	helper_printmenu('maingame')
+	helper_checkmenu('maingame', input("> "), 'mg')
 
-	if selection == "1":
-		initfight()
-	elif selection == "2":
-		apoth()
-	elif selection == "3":
-		smith()
-	elif selection == "4":
-		merchant()
-	elif selection == "5":
-		save()
-	elif selection == "6":
-		clear()
-		print("Are you sure? All unsaved changes will be lost.\n1) Yes\n2) No")
-		sure = input("> ")
-		if sure == "1":
-			initiate()
-		else:
-			mg()
+def exitsure():
+	clear()
+	print("Are you sure? All unsaved changes will be lost.\n1) Yes\n2) No")
+	sure = input("> ")
+	if sure == "1":
+		initiate()
 	else:
 		mg()
 #maingame gameloops end

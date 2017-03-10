@@ -4,27 +4,12 @@ def initiate():
 	print(
 """Welcome to RopasciRPG
 
-Please select an option.
-1) New game
-2) Load game
-3) Instructions
-4) About
-5) Mod info
-6) Exit game""")
+You're playing "%s".
 
-	menuselection = input("> ")
+Please select an option.""" % (gameloaded))
 
-	if menuselection == "1":
-		ng1()
-	elif menuselection == "2":
-		load()
-	elif menuselection == "3":
-		instructions()
-	elif menuselection == "4":
-		about()
-	elif menuselection == "5":
-		modinfo()
-	elif menuselection == "6":
-		gameexit()
-	else:
-		initiate()
+	if gameloaded == None:
+		print(bold("No game is loaded. The engine cannot function without a loaded game.\n"))
+
+	helper_printmenu('initiate')
+	helper_checkmenu('initiate', input("> "), 'initiate')

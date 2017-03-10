@@ -9,14 +9,15 @@ import pathlib
 import pickle
 import glob
 import json
-import traceback
 #import end
+exec(open("helpers.py").read())
 
 exec(open("classes.py").read())
 
 exec(open("declarations.py").read())
 
 exec(open("functions.py").read())
+
 
 #entities
 
@@ -31,15 +32,15 @@ exec(open("entities/itemeffects.py").read())
 #entities end
 
 #gameloops start
+exec(open("loops/fighting.py").read())
+
 exec(open("loops/initiate.py").read())
 
 exec(open("loops/main.py").read())
 
-exec(open("loops/fighting.py").read())
+exec(open("loops/newgame.py").read())
 
 exec(open("loops/stores.py").read())
-
-exec(open("loops/newgame.py").read())
 
 exec(open("menu/instructions.py").read())
 

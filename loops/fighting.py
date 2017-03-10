@@ -1,6 +1,6 @@
 #fighting gameloops start
 def initfight():
-	global player, enemy, playerselect, thug, bandit, eblob, chorse, wolf, magician, madp, lordling, bleader, mmagician, cblob, mlumberjack, osailor, gnometroll, eknight, slayerman, deserter, lord, wyvern, lynx, kblob, gmad, cminelo, hbandit, cunicorn, kgnometroll, enlord, mcriminal, ebear, king
+	global player, enemy, playerselect
 	clear()
 	if player.oot == "0":
 		location("oot")
